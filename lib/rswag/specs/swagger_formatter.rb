@@ -1,29 +1,28 @@
 # frozen_string_literal: true
 
-require 'active_support/core_ext/hash/deep_merge'
-require 'rspec/core/formatters/base_text_formatter'
-require 'swagger_helper'
+require "active_support/core_ext/hash/deep_merge"
+require "rspec/core/formatters/base_text_formatter"
+require "swagger_helper"
 
 module Rswag
   module Specs
+    # rubocop:disable Metrics/ClassLength
     class SwaggerFormatter < ::RSpec::Core::Formatters::BaseTextFormatter
-      if RSPEC_VERSION > 2
-        ::RSpec::Core::Formatters.register self, :example_group_finished, :stop
-      end
+      ::RSpec::Core::Formatters.register self, :example_group_finished, :stop if RSPEC_VERSION > 2
 
       def initialize(output, config = Rswag::Specs.config)
         super(output)
         @config = config
 
-        @output.puts 'Generating Swagger docs ...'
+        @output.puts "Generating Swagger docs ..."
       end
 
       def example_group_finished(notification)
         metadata = if RSPEC_VERSION > 2
-          notification.group.metadata
-        else
-          notification.metadata
-        end
+                     notification.group.metadata
+                   else
+                     notification.metadata
+                   end
 
         # !metadata[:document] won't work, since nil means we should generate
         # docs.
@@ -32,7 +31,7 @@ module Rswag
 
         swagger_doc = @config.get_openapi_spec(metadata[:openapi_spec] || metadata[:swagger_doc])
 
-        unless doc_version(swagger_doc).start_with?('2')
+        unless doc_version(swagger_doc).start_with?("2")
           # This is called multiple times per file!
           # metadata[:operation] is also re-used between examples within file
           # therefore be careful NOT to modify its content here.
@@ -45,9 +44,10 @@ module Rswag
         swagger_doc.deep_merge!(metadata_to_swagger(metadata))
       end
 
+      # rubocop:disable all
       def stop(_notification = nil)
         @config.openapi_specs.each do |url_path, doc|
-          unless doc_version(doc).start_with?('2')
+          unless doc_version(doc).start_with?("2")
             doc[:paths]&.each_pair do |_k, v|
               v.each_pair do |_verb, value|
                 is_hash = value.is_a?(Hash)
@@ -59,17 +59,17 @@ module Rswag
                     value[:requestBody] = { content: {} } unless value.dig(:requestBody, :content)
                     value[:requestBody][:required] = true if schema_param[:required]
                     value[:requestBody][:description] = schema_param[:description] if schema_param[:description]
-                    examples = value.dig(:request_examples)
+                    examples = value[:request_examples]
                     mime_list.each do |mime|
                       value[:requestBody][:content][mime] = { schema: schema_param[:schema] }
-                      if examples
-                        value[:requestBody][:content][mime][:examples] ||= {}
-                        examples.map do |example|
-                          value[:requestBody][:content][mime][:examples][example[:name]] = {
-                            summary: example[:summary] || value[:summary],
-                            value: example[:value]
-                          }
-                        end
+                      next unless examples
+
+                      value[:requestBody][:content][mime][:examples] ||= {}
+                      examples.map do |example|
+                        value[:requestBody][:content][mime][:examples][example[:name]] = {
+                          summary: example[:summary] || value[:summary],
+                          value: example[:value]
+                        }
                       end
                     end
                   end
@@ -85,13 +85,14 @@ module Rswag
           dirname = File.dirname(file_path)
           FileUtils.mkdir_p dirname unless File.exist?(dirname)
 
-          File.open(file_path, 'w') do |file|
+          File.open(file_path, "w") do |file|
             file.write(pretty_generate(doc))
           end
 
           @output.puts "Swagger doc generated at #{file_path}"
         end
       end
+      # rubocop:enable all
 
       private
 
@@ -115,19 +116,19 @@ module Rswag
 
         verb = metadata[:operation][:verb]
         operation = metadata[:operation]
-          .reject { |k, _v| k == :verb }
-          .merge(responses: { response_code => response })
+                      .reject { |k, _v| k == :verb }
+                      .merge(responses: { response_code => response })
 
         path_template = metadata[:path_item][:template]
         path_item = metadata[:path_item]
-          .reject { |k, _v| k == :template }
-          .merge(verb => operation)
+                      .reject { |k, _v| k == :template }
+                      .merge(verb => operation)
 
         { paths: { path_template => path_item } }
       end
 
       def doc_version(doc)
-        doc[:openapi] || doc[:swagger] || '3'
+        doc[:openapi] || doc[:swagger] || "3"
       end
 
       def upgrade_response_produces!(swagger_doc, metadata)
@@ -166,11 +167,12 @@ module Rswag
       def upgrade_servers!(swagger_doc)
         return unless swagger_doc[:servers].nil? && swagger_doc.key?(:schemes)
 
-        Rswag::Specs.deprecator.warn('Rswag::Specs: WARNING: schemes, host, and basePath are replaced in OpenAPI3! Rename to array of servers[{url}] (in swagger_helper.rb)')
+        Rswag::Specs.deprecator.warn("Rswag::Specs: WARNING: schemes, host, and basePath are replaced in OpenAPI3! " \
+                                     "Rename to array of servers[{url}] (in swagger_helper.rb)")
 
         swagger_doc[:servers] = { urls: [] }
         swagger_doc[:schemes].each do |scheme|
-          swagger_doc[:servers][:urls] << scheme + '://' + swagger_doc[:host] + swagger_doc[:basePath]
+          swagger_doc[:servers][:urls] << "#{scheme}://#{swagger_doc[:host]}#{swagger_doc[:basePath]}"
         end
 
         swagger_doc.delete(:schemes)
@@ -178,6 +180,7 @@ module Rswag
         swagger_doc.delete(:basePath)
       end
 
+      # rubocop:disable all
       def upgrade_oauth!(swagger_doc)
         # find flow in securitySchemes (securityDefinitions will have been re-written)
         schemes = swagger_doc.dig(:components, :securitySchemes)
@@ -186,15 +189,18 @@ module Rswag
         schemes.each do |name, v|
           next unless v.key?(:flow)
 
-          Rswag::Specs.deprecator.warn("Rswag::Specs: WARNING: securityDefinitions flow is replaced in OpenAPI3! Rename to components/securitySchemes/#{name}/flows[] (in swagger_helper.rb)")
+          Rswag::Specs.deprecator.warn("Rswag::Specs: WARNING: securityDefinitions flow is replaced in OpenAPI3! " \
+                                       "Rename to components/securitySchemes/#{name}/flows[] (in swagger_helper.rb)")
           flow = swagger_doc[:components][:securitySchemes][name].delete(:flow).to_s
-          if flow == 'accessCode'
-            Rswag::Specs.deprecator.warn("Rswag::Specs: WARNING: securityDefinitions accessCode is replaced in OpenAPI3! Rename to clientCredentials (in swagger_helper.rb)")
-            flow = 'authorizationCode'
+          if flow == "accessCode"
+            Rswag::Specs.deprecator.warn("Rswag::Specs: WARNING: securityDefinitions accessCode is replaced " \
+                                         "in OpenAPI3! Rename to clientCredentials (in swagger_helper.rb)")
+            flow = "authorizationCode"
           end
-          if flow == 'application'
-            Rswag::Specs.deprecator.warn("Rswag::Specs: WARNING: securityDefinitions application is replaced in OpenAPI3! Rename to authorizationCode (in swagger_helper.rb)")
-            flow = 'clientCredentials'
+          if flow == "application"
+            Rswag::Specs.deprecator.warn("Rswag::Specs: WARNING: securityDefinitions application is replaced " \
+                                         "in OpenAPI3! Rename to authorizationCode (in swagger_helper.rb)")
+            flow = "clientCredentials"
           end
           flow_elements = swagger_doc[:components][:securitySchemes][name].except(:type).each_with_object({}) do |(k, _v), a|
             a[k] = swagger_doc[:components][:securitySchemes][name].delete(k)
@@ -202,15 +208,17 @@ module Rswag
           swagger_doc[:components][:securitySchemes][name].merge!(flows: { flow => flow_elements })
         end
       end
+      # rubocop:enable all
 
       def remove_invalid_operation_keys!(value)
         return unless value.is_a?(Hash)
 
-        value.delete(:consumes) if value[:consumes]
-        value.delete(:produces) if value[:produces]
-        value.delete(:request_examples) if value[:request_examples]
-        value[:parameters].each { |p| p.delete(:getter) } if value[:parameters]
+        value&.delete(:consumes)
+        value&.delete(:produces)
+        value&.delete(:request_examples)
+        value[:parameters]&.each { |p| p.delete(:getter) }
       end
     end
+    # rubocop:enable Metrics/ClassLength
   end
 end

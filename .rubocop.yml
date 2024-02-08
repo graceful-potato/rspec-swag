@@ -1,0 +1,39 @@
+AllCops:
+  TargetRubyVersion: 2.7
+  Exclude:
+    - "Gemfile"
+    - "Rakefile"
+    - "rspec-swagger.gemspec"
+    - "bin/*"
+    - ".git/**/*"
+    - "spec/spec_helper.rb"
+    - "lib/tasks/**/*"
+    - "spec/**/*"
+
+Metrics/LineLength:
+  Max: 120
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+  ConsistentQuotesInMultiline: true
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/AbcSize:
+  Max: 35
+
+Style/SymbolArray:
+  EnforcedStyle: brackets
+
+Layout/FirstHashElementIndentation:
+  EnforcedStyle: consistent
+
+Metrics/MethodLength:
+  Max: 25
+
+Metrics/CyclomaticComplexity:
+  Max: 15
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented_relative_to_receiver

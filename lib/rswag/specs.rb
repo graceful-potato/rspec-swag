@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'rspec/core'
-require 'rswag/specs/example_group_helpers'
-require 'rswag/specs/example_helpers'
-require 'rswag/specs/configuration'
-require 'rswag/specs/railtie' if defined?(Rails::Railtie)
+require "rspec/core"
+require "rswag/specs/example_group_helpers"
+require "rswag/specs/example_helpers"
+require "rswag/specs/configuration"
+require "rswag/specs/railtie" if defined?(Rails::Railtie)
 
 module Rswag
   module Specs
@@ -33,12 +33,12 @@ module Rswag
     end
 
     def self.deprecator
-      @deprecator ||= ActiveSupport::Deprecation.new('3.0', 'rswag-specs')
+      @deprecator ||= ActiveSupport::Deprecation.new("3.0", "rswag-specs")
     end
 
     # Support Rails 3+ and RSpec 2+ (sigh!)
     RAILS_VERSION = Rails::VERSION::MAJOR
-    RSPEC_VERSION = RSpec::Core::Version::STRING.split('.').first.to_i
+    RSPEC_VERSION = RSpec::Core::Version::STRING.split(".").first.to_i
 
     RSpec::Core::Configuration.class_eval do
       RENAMED_METHODS.each do |old_name, new_name|
@@ -53,10 +53,10 @@ module Rswag
       RENAMED_METHODS.to_h { |old_name, new_name| ["#{old_name}=".to_sym, "#{new_name}=".to_sym] }
     )
 
-    if RUBY_VERSION.start_with? '2.6'
-      Specs.deprecator.warn('Rswag::Specs: WARNING: Support for Ruby 2.6 will be dropped in v3.0')
+    if RUBY_VERSION.start_with? "2.6"
+      Specs.deprecator.warn("Rswag::Specs: WARNING: Support for Ruby 2.6 will be dropped in v3.0")
     end
 
-    Specs.deprecator.warn('Rswag::Specs: WARNING: Support for RSpec 2.X will be dropped in v3.0') if RSPEC_VERSION < 3
+    Specs.deprecator.warn("Rswag::Specs: WARNING: Support for RSpec 2.X will be dropped in v3.0") if RSPEC_VERSION < 3
   end
 end

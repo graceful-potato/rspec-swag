@@ -1,0 +1,11 @@
+**/*/tmp
+**/*/log
+**/*/*.gem
+**/*/*.sqlite3
+**/*/public/assets
+**/*/node_modules
+*.swp
+Gemfile.lock
+/.idea/
+**/.byebug_history
+**/coverage

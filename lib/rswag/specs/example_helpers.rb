@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'rswag/specs/request_factory'
-require 'rswag/specs/response_validator'
+require "rswag/specs/request_factory"
+require "rswag/specs/response_validator"
 
 module Rswag
   module Specs

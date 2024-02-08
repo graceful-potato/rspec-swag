@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rswag/specs/response_validator'
+require "rswag/specs/response_validator"
 
 module Rswag
   module Specs
@@ -9,27 +9,27 @@ module Rswag
 
       before do
         allow(config).to receive(:get_openapi_spec).and_return(openapi_spec)
-        allow(config).to receive(:get_openapi_spec_version).and_return('2.0')
+        allow(config).to receive(:get_openapi_spec_version).and_return("2.0")
         allow(config).to receive(:openapi_strict_schema_validation).and_return(openapi_strict_schema_validation)
       end
 
-      let(:config) { double('config') }
+      let(:config) { double("config") }
       let(:openapi_spec) { {} }
-      let(:example) { double('example') }
+      let(:example) { double("example") }
       let(:openapi_strict_schema_validation) { false }
       let(:metadata) do
         {
           response: {
             code: 200,
             headers: {
-              'X-Rate-Limit-Limit' => { type: :integer },
-              'X-Cursor' => {
+              "X-Rate-Limit-Limit" => { type: :integer },
+              "X-Cursor" => {
                 schema: {
                   type: :string
                 },
                 required: false
               },
-              'X-Per-Page' => {
+              "X-Per-Page" => {
                 schema: {
                   type: :string,
                   nullable: true
@@ -42,72 +42,72 @@ module Rswag
                 text: { type: :string },
                 number: { type: :integer }
               },
-              required: ['text', 'number']
+              required: ["text", "number"]
             }
           }
         }
       end
 
-      describe '#validate!(metadata, response)' do
+      describe "#validate!(metadata, response)" do
         let(:call) { subject.validate!(metadata, response) }
         let(:response) do
           OpenStruct.new(
-            code: '200',
+            code: "200",
             headers: {
-              'X-Rate-Limit-Limit' => '10',
-              'X-Cursor' => 'test_cursor',
-              'X-Per-Page' => 25
+              "X-Rate-Limit-Limit" => "10",
+              "X-Cursor" => "test_cursor",
+              "X-Per-Page" => 25
             },
             body: '{"text":"Some comment", "number": 3}'
           )
         end
 
-        context 'response matches metadata' do
+        context "response matches metadata" do
           it { expect { call }.to_not raise_error }
         end
 
-        context 'response code differs from metadata' do
-          before { response.code = '400' }
+        context "response code differs from metadata" do
+          before { response.code = "400" }
           it { expect { call }.to raise_error(/Expected response code/) }
         end
 
-        context 'response headers differ from metadata' do
+        context "response headers differ from metadata" do
           before { response.headers = {} }
           it { expect { call }.to raise_error(/Expected response header/) }
         end
 
-        context 'response headers do not include optional header' do
+        context "response headers do not include optional header" do
           before {
             response.headers = {
-              'X-Rate-Limit-Limit' => '10',
-              'X-Per-Page' => 25
+              "X-Rate-Limit-Limit" => "10",
+              "X-Per-Page" => 25
             }
           }
           it { expect { call }.to_not raise_error }
         end
 
-        context 'response headers include nullable header' do
+        context "response headers include nullable header" do
           before {
             response.headers = {
-              'X-Rate-Limit-Limit' => '10',
-              'X-Cursor' => 'test_cursor',
-              'X-Per-Page' => nil
+              "X-Rate-Limit-Limit" => "10",
+              "X-Cursor" => "test_cursor",
+              "X-Per-Page" => nil
             }
           }
           it { expect { call }.to_not raise_error }
         end
 
-        context 'response headers missing nullable header' do
+        context "response headers missing nullable header" do
           before {
             response.headers = {
-              'X-Rate-Limit-Limit' => '10',
-              'X-Cursor' => 'test_cursor'
+              "X-Rate-Limit-Limit" => "10",
+              "X-Cursor" => "test_cursor"
             }
           }
           it { expect { call }.to raise_error(/Expected response header/) }
         end
 
-        context 'response body differs from metadata' do
+        context "response body differs from metadata" do
           before { response.body = '{"foo":"Some comment"}' }
           it { expect { call }.to raise_error(/Expected response body/) }
         end
@@ -142,53 +142,53 @@ module Rswag
           end
         end
 
-        context 'referenced schemas' do
-          context 'swagger 2.0' do
+        context "referenced schemas" do
+          context "swagger 2.0" do
             before do
               openapi_spec[:definitions] = {
-                'blog' => {
+                "blog" => {
                   type: :object,
                   properties: { foo: { type: :string } },
-                  required: ['foo']
+                  required: ["foo"]
                 }
               }
-              metadata[:response][:schema] = { '$ref' => '#/definitions/blog' }
+              metadata[:response][:schema] = { "$ref" => "#/definitions/blog" }
             end
 
-            it 'uses the referenced schema to validate the response body' do
+            it "uses the referenced schema to validate the response body" do
               expect { call }.to raise_error(/Expected response body/)
             end
           end
 
-          context 'openapi 3.0.1' do
-            context 'components/schemas' do
+          context "openapi 3.0.1" do
+            context "components/schemas" do
               before do
                 allow(Rswag::Specs.deprecator).to receive(:warn)
-                allow(config).to receive(:get_openapi_spec_version).and_return('3.0.1')
+                allow(config).to receive(:get_openapi_spec_version).and_return("3.0.1")
                 openapi_spec[:components] = {
                   schemas: {
-                    'blog' => {
+                    "blog" => {
                       type: :object,
                       properties: { foo: { type: :string } },
-                      required: ['foo']
+                      required: ["foo"]
                     }
                   }
                 }
-                metadata[:response][:schema] = { '$ref' => '#/components/schemas/blog' }
+                metadata[:response][:schema] = { "$ref" => "#/components/schemas/blog" }
               end
 
-              it 'uses the referenced schema to validate the response body' do
+              it "uses the referenced schema to validate the response body" do
                 expect { call }.to raise_error(/Expected response body/)
               end
 
-              context 'nullable referenced schema' do
+              context "nullable referenced schema" do
                 let(:response) do
                   OpenStruct.new(
-                    code: '200',
+                    code: "200",
                     headers: {
-                      'X-Rate-Limit-Limit' => '10',
-                      'X-Cursor' => 'test_cursor',
-                      'X-Per-Page' => 25
+                      "X-Rate-Limit-Limit" => "10",
+                      "X-Cursor" => "test_cursor",
+                      "X-Per-Page" => 25
                     },
                     body: '{ "blog": null }'
                   )
@@ -196,40 +196,40 @@ module Rswag
 
                 before do
                   metadata[:response][:schema] = {
-                    properties: { blog: { '$ref' => '#/components/schema/blog' } },
-                    required: ['blog']
+                    properties: { blog: { "$ref" => "#/components/schema/blog" } },
+                    required: ["blog"]
                   }
                 end
 
-                context 'using x-nullable attribute' do
+                context "using x-nullable attribute" do
                   before do
-                    metadata[:response][:schema][:properties][:blog]['x-nullable'] = true
+                    metadata[:response][:schema][:properties][:blog]["x-nullable"] = true
                   end
 
-                  context 'response matches metadata' do
+                  context "response matches metadata" do
                     it { expect { call }.to_not raise_error }
                   end
                 end
 
-                context 'using nullable attribute' do
+                context "using nullable attribute" do
                   before do
-                    metadata[:response][:schema][:properties][:blog]['nullable'] = true
+                    metadata[:response][:schema][:properties][:blog]["nullable"] = true
                   end
 
-                  context 'response matches metadata' do
+                  context "response matches metadata" do
                     it { expect { call }.to_not raise_error }
                   end
                 end
               end
 
-              context 'nullable oneOf with referenced schema' do
+              context "nullable oneOf with referenced schema" do
                 let(:response) do
                   OpenStruct.new(
-                    code: '200',
+                    code: "200",
                     headers: {
-                      'X-Rate-Limit-Limit' => '10',
-                      'X-Cursor' => 'test_cursor',
-                      'X-Per-Page' => 25
+                      "X-Rate-Limit-Limit" => "10",
+                      "X-Cursor" => "test_cursor",
+                      "X-Per-Page" => 25
                     },
                     body: '{ "blog": null }'
                   )
@@ -239,53 +239,53 @@ module Rswag
                   metadata[:response][:schema] = {
                     properties: {
                       blog: {
-                        oneOf: [{ '$ref' => '#/components/schema/blog' }]
+                        oneOf: [{ "$ref" => "#/components/schema/blog" }]
                       }
                     },
-                    required: ['blog']
+                    required: ["blog"]
                   }
                 end
 
-                context 'using x-nullable attribute' do
+                context "using x-nullable attribute" do
                   before do
-                    metadata[:response][:schema][:properties][:blog]['x-nullable'] = true
+                    metadata[:response][:schema][:properties][:blog]["x-nullable"] = true
                   end
 
-                  context 'response matches metadata' do
+                  context "response matches metadata" do
                     it { expect { call }.to_not raise_error }
                   end
                 end
 
-                context 'using nullable attribute' do
+                context "using nullable attribute" do
                   before do
-                    metadata[:response][:schema][:properties][:blog]['nullable'] = true
+                    metadata[:response][:schema][:properties][:blog]["nullable"] = true
                   end
 
-                  context 'response matches metadata' do
+                  context "response matches metadata" do
                     it { expect { call }.to_not raise_error }
                   end
                 end
               end
             end
 
-            context 'deprecated definitions' do
+            context "deprecated definitions" do
               before do
                 allow(Rswag::Specs.deprecator).to receive(:warn)
-                allow(config).to receive(:get_openapi_spec_version).and_return('3.0.1')
+                allow(config).to receive(:get_openapi_spec_version).and_return("3.0.1")
                 openapi_spec[:definitions] = {
-                  'blog' => {
+                  "blog" => {
                     type: :object,
                     properties: { foo: { type: :string } },
-                    required: ['foo']
+                    required: ["foo"]
                   }
                 }
-                metadata[:response][:schema] = { '$ref' => '#/definitions/blog' }
+                metadata[:response][:schema] = { "$ref" => "#/definitions/blog" }
               end
 
-              it 'warns the user to upgrade' do
+              it "warns the user to upgrade" do
                 expect { call }.to raise_error(/Expected response body/)
                 expect(Rswag::Specs.deprecator).to have_received(:warn)
-                  .with('Rswag::Specs: WARNING: definitions is replaced in OpenAPI3! Rename to components/schemas (in swagger_helper.rb)')
+                  .with("Rswag::Specs: WARNING: definitions is replaced in OpenAPI3! Rename to components/schemas (in swagger_helper.rb)")
               end
             end
           end

@@ -1,14 +1,8 @@
 # frozen_string_literal: true
 
-module Rails
-  module VERSION
-    MAJOR = 3
-  end
-end
+require "simplecov"
 
-require 'simplecov'
-
-RSpec.configure do |config|
+RSpec.configure do
   SimpleCov.start do
     enable_coverage :branch
     primary_coverage :branch
@@ -17,4 +11,4 @@ RSpec.configure do |config|
   end
 end
 
-require 'rswag/specs'
+require "rswag/specs"
