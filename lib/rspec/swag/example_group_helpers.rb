@@ -2,8 +2,8 @@
 
 require "active_support"
 
-module Rswag
-  module Specs
+module RSpec
+  module Swag
     module ExampleGroupHelpers
       def path(template, metadata = {}, &block)
         metadata[:path_item] = { template: template }
@@ -119,29 +119,18 @@ module Rswag
       # @param &block [Proc] you can make additional assertions within that block
       # @return [void]
       def run_test!(description = nil, *args, **options, &block)
-        # rswag metadata value defaults to true
-        options[:rswag] = true unless options.key?(:rswag)
+        # swagger metadata value defaults to true
+        options[:swagger] = true unless options.key?(:swagger)
 
         description ||= "returns a #{metadata[:response][:code]} response"
 
-        if RSPEC_VERSION < 3
-          before do
-            submit_request(example.metadata)
-          end
+        before do |example|
+          submit_request(example.metadata)
+        end
 
-          it description, *args, **options do
-            assert_response_matches_metadata(metadata)
-            block.call(response) if block_given?
-          end
-        else
-          before do |example|
-            submit_request(example.metadata)
-          end
-
-          it description, *args, **options do |example|
-            assert_response_matches_metadata(example.metadata, &block)
-            example.instance_exec(response, &block) if block_given?
-          end
+        it description, *args, **options do |example|
+          assert_response_matches_metadata(example.metadata, &block)
+          example.instance_exec(last_response, &block) if block_given?
         end
       end
     end

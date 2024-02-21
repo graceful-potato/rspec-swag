@@ -5,11 +5,11 @@ require "active_support/core_ext/hash/slice"
 require "active_support/core_ext/hash/conversions"
 require "json"
 
-module Rswag
-  module Specs
+module RSpec
+  module Swag
     # rubocop:disable Metrics/ClassLength
     class RequestFactory
-      def initialize(config = ::Rswag::Specs.config)
+      def initialize(config = ::RSpec::Swag.config)
         @config = config
       end
 
@@ -55,8 +55,8 @@ module Rswag
           (swagger_doc[:securityDefinitions] || {}).slice(*scheme_names).values
         else # Openapi3
           if swagger_doc.key?(:securityDefinitions)
-            Rswag::Specs.deprecator.warn("Rswag::Specs: WARNING: securityDefinitions is replaced in OpenAPI3! "\
-                                         "Rename to components/securitySchemes (in swagger_helper.rb)")
+            RSpec::Swag.deprecator.warn("RSpec::Swag: WARNING: securityDefinitions is replaced in OpenAPI3! "\
+                                           "Rename to components/securitySchemes (in swagger_helper.rb)")
             swagger_doc[:components] ||= { securitySchemes: swagger_doc[:securityDefinitions] }
             swagger_doc.delete(:securityDefinitions)
           end
@@ -77,8 +77,8 @@ module Rswag
         if doc_version(swagger_doc).start_with?("2")
           ref.sub("#/parameters/", "").to_sym
         elsif ref.start_with?("#/parameters/") # Openapi3
-          Rswag::Specs.deprecator.warn("Rswag::Specs: WARNING: #/parameters/ refs are replaced in OpenAPI3! " \
-                                       "Rename to #/components/parameters/")
+          RSpec::Swag..deprecator.warn("RSpec::Swag: WARNING: #/parameters/ refs are replaced in OpenAPI3! " \
+                                          "Rename to #/components/parameters/")
           ref.sub("#/parameters/", "").to_sym
         else
           ref.sub("#/components/parameters/", "").to_sym
@@ -89,8 +89,8 @@ module Rswag
         if doc_version(swagger_doc).start_with?("2")
           swagger_doc[:parameters]
         elsif swagger_doc.key?(:parameters) # Openapi3
-          Rswag::Specs.deprecator.warn("Rswag::Specs: WARNING: parameters is replaced in OpenAPI3! "\
-                                       "Rename to components/parameters (in swagger_helper.rb)")
+          RSpec::Swag..deprecator.warn("RSpec::Swag: WARNING: parameters is replaced in OpenAPI3! "\
+                                          "Rename to components/parameters (in swagger_helper.rb)")
           swagger_doc[:parameters]
         else
           components = swagger_doc[:components] || {}
@@ -118,8 +118,8 @@ module Rswag
         uses_base_path = swagger_doc[:basePath].present?
 
         if open_api_3_doc && uses_base_path
-          Rswag::Specs.deprecator.warn("Rswag::Specs: WARNING: basePath is replaced in OpenAPI3! " \
-                                       "Update your swagger_helper.rb")
+          RSpec::Swag.deprecator.warn("RSpec::Swag: WARNING: basePath is replaced in OpenAPI3! " \
+                                         "Update your swagger_helper.rb")
         end
 
         template = if uses_base_path

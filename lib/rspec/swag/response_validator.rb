@@ -3,12 +3,12 @@
 require "active_support/core_ext/hash/slice"
 require "json-schema"
 require "json"
-require "rswag/specs/extended_schema"
+require "rspec/swag/extended_schema"
 
-module Rswag
-  module Specs
+module RSpec
+  module Swag
     class ResponseValidator
-      def initialize(config = ::Rswag::Specs.config)
+      def initialize(config = ::RSpec::Swag.config)
         @config = config
       end
 
@@ -24,7 +24,7 @@ module Rswag
 
       def validate_code!(metadata, response)
         expected = metadata[:response][:code].to_s
-        return unless response.code != expected
+        return unless response.status.to_s != expected
 
         raise UnexpectedResponse,
               "Expected response code '#{response.code}' to match '#{expected}'\n" \
@@ -76,13 +76,7 @@ module Rswag
 
       # rubocop:disable Style/DoubleNegation
       def validation_options_from(metadata)
-        if metadata.key?(:swagger_strict_schema_validation)
-          Rswag::Specs.deprecator.warn('Rswag::Specs: WARNING: This option will be renamed to ' \
-                                       '"openapi_strict_schema_validation" in v3.0')
-          is_strict = !!metadata[:swagger_strict_schema_validation]
-        else
-          is_strict = !!metadata.fetch(:openapi_strict_schema_validation, @config.openapi_strict_schema_validation)
-        end
+        is_strict = !!metadata.fetch(:openapi_strict_schema_validation, @config.openapi_strict_schema_validation)
 
         { strict: is_strict }
       end
@@ -92,8 +86,8 @@ module Rswag
         if version.start_with?("2")
           swagger_doc.slice(:definitions)
         elsif swagger_doc.key?(:definitions) # Openapi3
-          Rswag::Specs.deprecator.warn("Rswag::Specs: WARNING: definitions is replaced in OpenAPI3! "\
-                                       "Rename to components/schemas (in swagger_helper.rb)")
+          RSpec::Swag.deprecator.warn("RSpec::Swag: WARNING: definitions is replaced in OpenAPI3! "\
+                                         "Rename to components/schemas (in swagger_helper.rb)")
           swagger_doc.slice(:definitions)
         else
           components = swagger_doc[:components] || {}

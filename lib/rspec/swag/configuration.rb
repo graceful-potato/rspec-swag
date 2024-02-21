@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Rswag
-  module Specs
+module RSpec
+  module Swag
     class Configuration
       def initialize(rspec_config)
         @rspec_config = rspec_config
@@ -22,13 +22,11 @@ module Rswag
         end
       end
 
-      def rswag_dry_run
-        @rswag_dry_run ||= begin
-          if ENV.key?("SWAGGER_DRY_RUN") || ENV.key?("RSWAG_DRY_RUN")
-            @rspec_config.rswag_dry_run = ENV["SWAGGER_DRY_RUN"] == "1" || ENV["RSWAG_DRY_RUN"] == "1"
-          end
+      def swagger_dry_run
+        @swagger_dry_run ||= begin
+          @rspec_config.swagger_dry_run = ENV["SWAGGER_DRY_RUN"] == "1" if ENV.key?("SWAGGER_DRY_RUN")
 
-          @rspec_config.rswag_dry_run.nil? || @rspec_config.rswag_dry_run
+          @rspec_config.swagger_dry_run.nil? || @rspec_config.swagger_dry_run
         end
       end
 

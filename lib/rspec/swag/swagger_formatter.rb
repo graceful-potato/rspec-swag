@@ -4,13 +4,13 @@ require "active_support/core_ext/hash/deep_merge"
 require "rspec/core/formatters/base_text_formatter"
 require "swagger_helper"
 
-module Rswag
-  module Specs
+module RSpec
+  module Swag
     # rubocop:disable Metrics/ClassLength
     class SwaggerFormatter < ::RSpec::Core::Formatters::BaseTextFormatter
-      ::RSpec::Core::Formatters.register self, :example_group_finished, :stop if RSPEC_VERSION > 2
+      ::RSpec::Core::Formatters.register self, :example_group_finished, :stop # if RSPEC_VERSION > 2
 
-      def initialize(output, config = Rswag::Specs.config)
+      def initialize(output, config = RSpec::Swag.config)
         super(output)
         @config = config
 
@@ -18,14 +18,9 @@ module Rswag
       end
 
       def example_group_finished(notification)
-        metadata = if RSPEC_VERSION > 2
-                     notification.group.metadata
-                   else
-                     notification.metadata
-                   end
+        metadata = notification.group.metadata
 
-        # !metadata[:document] won't work, since nil means we should generate
-        # docs.
+        # !metadata[:document] won't work, since nil means we should generate docs.
         return if metadata[:document] == false
         return unless metadata.key?(:response)
 
@@ -167,8 +162,8 @@ module Rswag
       def upgrade_servers!(swagger_doc)
         return unless swagger_doc[:servers].nil? && swagger_doc.key?(:schemes)
 
-        Rswag::Specs.deprecator.warn("Rswag::Specs: WARNING: schemes, host, and basePath are replaced in OpenAPI3! " \
-                                     "Rename to array of servers[{url}] (in swagger_helper.rb)")
+        RSpec::Swag.deprecator.warn("RSpec::Swag: WARNING: schemes, host, and basePath are replaced " \
+                                       "in OpenAPI3! Rename to array of servers[{url}] (in swagger_helper.rb)")
 
         swagger_doc[:servers] = { urls: [] }
         swagger_doc[:schemes].each do |scheme|
@@ -189,17 +184,17 @@ module Rswag
         schemes.each do |name, v|
           next unless v.key?(:flow)
 
-          Rswag::Specs.deprecator.warn("Rswag::Specs: WARNING: securityDefinitions flow is replaced in OpenAPI3! " \
-                                       "Rename to components/securitySchemes/#{name}/flows[] (in swagger_helper.rb)")
+          RSpec::Swag.deprecator.warn("RSpec::Swag: WARNING: securityDefinitions flow is replaced in OpenAPI3! " \
+                                         "Rename to components/securitySchemes/#{name}/flows[] (in swagger_helper.rb)")
           flow = swagger_doc[:components][:securitySchemes][name].delete(:flow).to_s
           if flow == "accessCode"
-            Rswag::Specs.deprecator.warn("Rswag::Specs: WARNING: securityDefinitions accessCode is replaced " \
-                                         "in OpenAPI3! Rename to clientCredentials (in swagger_helper.rb)")
+            RSpec::Swag.deprecator.warn("RSpec::Swag: WARNING: securityDefinitions accessCode is replaced " \
+                                           "in OpenAPI3! Rename to clientCredentials (in swagger_helper.rb)")
             flow = "authorizationCode"
           end
           if flow == "application"
-            Rswag::Specs.deprecator.warn("Rswag::Specs: WARNING: securityDefinitions application is replaced " \
-                                         "in OpenAPI3! Rename to authorizationCode (in swagger_helper.rb)")
+            RSpec::Swag.deprecator.warn("RSpec::Swag: WARNING: securityDefinitions application is replaced " \
+                                           "in OpenAPI3! Rename to authorizationCode (in swagger_helper.rb)")
             flow = "clientCredentials"
           end
           flow_elements = swagger_doc[:components][:securitySchemes][name].except(:type).each_with_object({}) do |(k, _v), a|

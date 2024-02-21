@@ -3,12 +3,13 @@ AllCops:
   Exclude:
     - "Gemfile"
     - "Rakefile"
-    - "rspec-swagger.gemspec"
+    - "rspec-swag.gemspec"
     - "bin/*"
     - ".git/**/*"
     - "spec/spec_helper.rb"
     - "lib/tasks/**/*"
     - "spec/**/*"
+    - "lib/rspec/swag/templates/**/*"
 
 Metrics/LineLength:
   Max: 120

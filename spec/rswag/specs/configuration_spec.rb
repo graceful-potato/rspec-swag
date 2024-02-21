@@ -8,7 +8,7 @@ RSpec.describe Rswag::Specs::Configuration do
 
   let(:rspec_config) do
     OpenStruct.new(openapi_root: openapi_root, openapi_specs: openapi_specs, openapi_format: openapi_format,
-                   rswag_dry_run: rswag_dry_run, openapi_strict_schema_validation: openapi_strict_schema_validation)
+                   swagger_dry_run: swagger_dry_run, openapi_strict_schema_validation: openapi_strict_schema_validation)
   end
   let(:openapi_root) { "foobar" }
   let(:openapi_specs) do
@@ -18,7 +18,7 @@ RSpec.describe Rswag::Specs::Configuration do
     }
   end
   let(:openapi_format) { :yaml }
-  let(:rswag_dry_run) { nil }
+  let(:swagger_dry_run) { nil }
   let(:openapi_strict_schema_validation) { nil }
 
   describe "#openapi_root" do
@@ -72,18 +72,18 @@ RSpec.describe Rswag::Specs::Configuration do
     end
   end
 
-  describe "#rswag_dry_run" do
-    let(:response) { subject.rswag_dry_run }
+  describe "#swagger_dry_run" do
+    let(:response) { subject.swagger_dry_run }
 
     context "when not provided" do
-      let(:rswag_dry_run) { nil }
+      let(:swagger_dry_run) { nil }
       it { expect(response).to eq(true) }
     end
 
     context "when environment variable is provided" do
       context "when set to 0" do
         it "returns false" do
-          ClimateControl.modify RSWAG_DRY_RUN: "0" do
+          ClimateControl.modify SWAGGER_DRY_RUN: "0" do
             expect(response).to eq(false)
           end
         end
@@ -91,7 +91,7 @@ RSpec.describe Rswag::Specs::Configuration do
 
       context "when set to 1" do
         it "returns true" do
-          ClimateControl.modify RSWAG_DRY_RUN: "1" do
+          ClimateControl.modify SWAGGER_DRY_RUN: "1" do
             expect(response).to eq(true)
           end
         end
@@ -117,7 +117,7 @@ RSpec.describe Rswag::Specs::Configuration do
     end
 
     context "when provided in rspec config" do
-      let(:rswag_dry_run) { false }
+      let(:swagger_dry_run) { false }
       it { expect(response).to eq(false) }
     end
   end

@@ -2,8 +2,8 @@
 
 require "json-schema"
 
-module Rswag
-  module Specs
+module RSpec
+  module Swag
     class ExtendedSchema < JSON::Schema::Draft4
       def initialize
         super
