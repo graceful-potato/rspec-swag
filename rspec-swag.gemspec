@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 $LOAD_PATH.push File.expand_path("lib", __dir__)
+require "rspec/swag/version"
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
   s.name        = "rspec-swag"
-  s.version     = "0.0.1"
+  s.version     = RSpec::Swag::VERSION
   s.authors     = ["Richie Morris", "Greg Myers", "Jay Danielian", "GracefulPotato"]
   s.email       = ["gracefulpotatow@gmail.com"]
   s.homepage    = "https://github.com/"
@@ -17,7 +18,6 @@ Gem::Specification.new do |s|
 
   s.add_dependency "activesupport", ">= 3.1", "< 7.2"
   s.add_dependency "json-schema", ">= 2.2", "< 5.0"
-  s.add_dependency "rack-test", ">=1.0", "< 3.0"
   s.add_dependency "rspec-core", ">=3.0", "< 4.0"
 
   s.add_development_dependency "rspec", "=3.13.0"
