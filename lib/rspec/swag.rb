@@ -25,7 +25,5 @@ module RSpec
     def self.deprecator
       @deprecator ||= ActiveSupport::Deprecation.new("3.0", "rspec-swag")
     end
-
-    # RSPEC_VERSION = RSpec::Core::Version::STRING.split(".").first.to_i
   end
 end

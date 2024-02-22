@@ -8,7 +8,7 @@ module RSpec
   module Swag
     # rubocop:disable Metrics/ClassLength
     class SwaggerFormatter < ::RSpec::Core::Formatters::BaseTextFormatter
-      ::RSpec::Core::Formatters.register self, :example_group_finished, :stop # if RSPEC_VERSION > 2
+      ::RSpec::Core::Formatters.register self, :example_group_finished, :stop
 
       def initialize(output, config = RSpec::Swag.config)
         super(output)
