@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.version     = RSpec::Swag::VERSION
   s.authors     = ["Richie Morris", "Greg Myers", "Jay Danielian", "GracefulPotato"]
   s.email       = ["gracefulpotatow@gmail.com"]
-  s.homepage    = "https://github.com/"
+  s.homepage    = "https://github.com/graceful-potato/rspec-swag"
   s.summary     = "An OpenAPI-based (formerly called Swagger) DSL for rspec & accompanying rake task for generating OpenAPI specification files"
   s.description = "Simplify API integration testing with a succinct rspec DSL and generate OpenAPI specification files directly from your rspec tests. More about the OpenAPI initiative here: http://spec.openapis.org/"
   s.license     = "MIT"
