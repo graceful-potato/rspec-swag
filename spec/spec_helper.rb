@@ -11,4 +11,4 @@ RSpec.configure do
   end
 end
 
-require "rswag/specs"
+require "rspec/swag"

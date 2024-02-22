@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require "rswag/specs/response_validator"
+require "rspec/swag/response_validator"
 
-module Rswag
-  module Specs
+module RSpec
+  module Swag
     RSpec.describe ResponseValidator do
       subject { ResponseValidator.new(config) }
 
@@ -52,7 +52,7 @@ module Rswag
         let(:call) { subject.validate!(metadata, response) }
         let(:response) do
           OpenStruct.new(
-            code: "200",
+            status: 200,
             headers: {
               "X-Rate-Limit-Limit" => "10",
               "X-Cursor" => "test_cursor",
@@ -67,7 +67,7 @@ module Rswag
         end
 
         context "response code differs from metadata" do
-          before { response.code = "400" }
+          before { response.status = 400 }
           it { expect { call }.to raise_error(/Expected response code/) }
         end
 
@@ -163,7 +163,7 @@ module Rswag
           context "openapi 3.0.1" do
             context "components/schemas" do
               before do
-                allow(Rswag::Specs.deprecator).to receive(:warn)
+                allow(RSpec::Swag.deprecator).to receive(:warn)
                 allow(config).to receive(:get_openapi_spec_version).and_return("3.0.1")
                 openapi_spec[:components] = {
                   schemas: {
@@ -184,7 +184,7 @@ module Rswag
               context "nullable referenced schema" do
                 let(:response) do
                   OpenStruct.new(
-                    code: "200",
+                    status: 200,
                     headers: {
                       "X-Rate-Limit-Limit" => "10",
                       "X-Cursor" => "test_cursor",
@@ -225,7 +225,7 @@ module Rswag
               context "nullable oneOf with referenced schema" do
                 let(:response) do
                   OpenStruct.new(
-                    code: "200",
+                    status: 200,
                     headers: {
                       "X-Rate-Limit-Limit" => "10",
                       "X-Cursor" => "test_cursor",
@@ -270,7 +270,7 @@ module Rswag
 
             context "deprecated definitions" do
               before do
-                allow(Rswag::Specs.deprecator).to receive(:warn)
+                allow(RSpec::Swag.deprecator).to receive(:warn)
                 allow(config).to receive(:get_openapi_spec_version).and_return("3.0.1")
                 openapi_spec[:definitions] = {
                   "blog" => {
@@ -284,8 +284,8 @@ module Rswag
 
               it "warns the user to upgrade" do
                 expect { call }.to raise_error(/Expected response body/)
-                expect(Rswag::Specs.deprecator).to have_received(:warn)
-                  .with("Rswag::Specs: WARNING: definitions is replaced in OpenAPI3! Rename to components/schemas (in swagger_helper.rb)")
+                expect(RSpec::Swag.deprecator).to have_received(:warn)
+                  .with("RSpec::Swag: WARNING: definitions is replaced in OpenAPI3! Rename to components/schemas (in swagger_helper.rb)")
               end
             end
           end

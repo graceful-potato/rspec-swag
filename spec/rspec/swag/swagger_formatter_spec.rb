@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "rswag/specs/swagger_formatter"
+require "rspec/swag/swagger_formatter"
 require "ostruct"
 
-module Rswag
-  module Specs
+module RSpec
+  module Swag
     RSpec.describe SwaggerFormatter do
       subject { described_class.new(output, config) }
 
@@ -12,7 +12,7 @@ module Rswag
       before do
         allow(config).to receive(:openapi_root).and_return(openapi_root)
 
-        allow(Rswag::Specs.deprecator).to receive(:warn) # Silence deprecation output from specs
+        allow(RSpec::Swag.deprecator).to receive(:warn) # Silence deprecation output from specs
       end
       let(:config) { double("config") }
       let(:output) { double("output").as_null_object }

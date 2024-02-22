@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
-require "rswag/specs/example_helpers"
+require "rspec/swag/example_helpers"
 
-module Rswag
-  module Specs
+module RSpec
+  module Swag
     RSpec.describe ExampleHelpers do
       subject { double("example") }
 
       before do
         subject.extend(ExampleHelpers)
-        allow(Rswag::Specs).to receive(:config).and_return(config)
+        allow(RSpec::Swag).to receive(:config).and_return(config)
         allow(config).to receive(:get_openapi_spec).and_return(openapi_spec)
-        stub_const("Rswag::Specs::RAILS_VERSION", 3)
+        stub_const("RSpec::Swag::RAILS_VERSION", 3)
       end
       let(:config) { double("config") }
       let(:openapi_spec) do

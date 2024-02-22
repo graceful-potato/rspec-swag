@@ -77,7 +77,7 @@ module RSpec
         if doc_version(swagger_doc).start_with?("2")
           ref.sub("#/parameters/", "").to_sym
         elsif ref.start_with?("#/parameters/") # Openapi3
-          RSpec::Swag..deprecator.warn("RSpec::Swag: WARNING: #/parameters/ refs are replaced in OpenAPI3! " \
+          RSpec::Swag.deprecator.warn("RSpec::Swag: WARNING: #/parameters/ refs are replaced in OpenAPI3! " \
                                           "Rename to #/components/parameters/")
           ref.sub("#/parameters/", "").to_sym
         else
@@ -89,7 +89,7 @@ module RSpec
         if doc_version(swagger_doc).start_with?("2")
           swagger_doc[:parameters]
         elsif swagger_doc.key?(:parameters) # Openapi3
-          RSpec::Swag..deprecator.warn("RSpec::Swag: WARNING: parameters is replaced in OpenAPI3! "\
+          RSpec::Swag.deprecator.warn("RSpec::Swag: WARNING: parameters is replaced in OpenAPI3! "\
                                           "Rename to components/parameters (in swagger_helper.rb)")
           swagger_doc[:parameters]
         else
@@ -217,7 +217,7 @@ module RSpec
         # Content-Type header
         consumes = metadata[:operation][:consumes] || swagger_doc[:consumes]
         if consumes
-          content_type = example.respond_to?(:'Content-Type') ? example.send(:'Content-Type') : consumes.first
+          content_type = example.respond_to?(:"Content-Type") ? example.send(:"Content-Type") : consumes.first
           tuples << ["Content-Type", content_type]
         end
 

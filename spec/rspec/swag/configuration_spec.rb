@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require "rswag/specs/configuration"
+require "rspec/swag/configuration"
 require "climate_control"
 
-RSpec.describe Rswag::Specs::Configuration do
+RSpec.describe RSpec::Swag::Configuration do
   subject { described_class.new(rspec_config) }
 
   let(:rspec_config) do
@@ -30,7 +30,7 @@ RSpec.describe Rswag::Specs::Configuration do
 
     context "not provided" do
       let(:openapi_root) { nil }
-      it { expect { response }.to raise_error Rswag::Specs::ConfigurationError }
+      it { expect { response }.to raise_error RSpec::Swag::ConfigurationError }
     end
   end
 
@@ -43,12 +43,12 @@ RSpec.describe Rswag::Specs::Configuration do
 
     context "not provided" do
       let(:openapi_specs) { nil }
-      it { expect { response }.to raise_error Rswag::Specs::ConfigurationError }
+      it { expect { response }.to raise_error RSpec::Swag::ConfigurationError }
     end
 
     context "provided but empty" do
       let(:openapi_specs) { {} }
-      it { expect { response }.to raise_error Rswag::Specs::ConfigurationError }
+      it { expect { response }.to raise_error RSpec::Swag::ConfigurationError }
     end
   end
 
@@ -62,7 +62,7 @@ RSpec.describe Rswag::Specs::Configuration do
     context "unsupported format provided" do
       let(:openapi_format) { :xml }
 
-      it { expect { response }.to raise_error Rswag::Specs::ConfigurationError }
+      it { expect { response }.to raise_error RSpec::Swag::ConfigurationError }
     end
 
     context "not provided" do
@@ -144,7 +144,7 @@ RSpec.describe Rswag::Specs::Configuration do
 
       context "no matching doc" do
         let(:tag) { "foobar" }
-        it { expect { openapi_spec }.to raise_error Rswag::Specs::ConfigurationError }
+        it { expect { openapi_spec }.to raise_error RSpec::Swag::ConfigurationError }
       end
     end
   end
@@ -163,7 +163,7 @@ RSpec.describe Rswag::Specs::Configuration do
 
       context "with no matching doc" do
         let(:tag) { "foobar" }
-        it { expect { response }.to raise_error Rswag::Specs::ConfigurationError }
+        it { expect { response }.to raise_error RSpec::Swag::ConfigurationError }
       end
     end
 

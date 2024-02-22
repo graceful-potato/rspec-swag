@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency "rspec-core", ">=3.0", "< 4.0"
 
   s.add_development_dependency "rspec", "=3.13.0"
+  s.add_development_dependency "climate_control", ">=1.0.0", "< 2.0"
   s.add_development_dependency "rubocop", "=1.60.2"
   s.add_development_dependency "simplecov", "=0.21.2"
 end

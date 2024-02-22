@@ -2,10 +2,10 @@
 
 # cspell:ignore Bfoo Bbar
 
-require "rswag/specs/request_factory"
+require "rspec/swag/request_factory"
 
-module Rswag
-  module Specs
+module RSpec
+  module Swag
     RSpec.describe RequestFactory do
       subject { RequestFactory.new(config) }
 
@@ -389,7 +389,7 @@ module Rswag
             it "uses the referenced metadata to build the request" do
               expect do
                 request[:payload]
-              end.to raise_error(Rswag::Specs::MissingParameterError, /Missing parameter 'comment'/)
+              end.to raise_error(RSpec::Swag::MissingParameterError, /Missing parameter 'comment'/)
             end
           end
 
@@ -498,7 +498,7 @@ module Rswag
           context "openapi 3.0.1 upgrade notice" do
             let(:openapi_spec) { { openapi: "3.0.1" } }
             before do
-              allow(Rswag::Specs.deprecator).to receive(:warn)
+              allow(RSpec::Swag.deprecator).to receive(:warn)
               openapi_spec[:securityDefinitions] = { basic: { type: :basic } }
               metadata[:operation][:security] = [basic: []]
               allow(example).to receive(:Authorization).and_return("Basic foobar")
@@ -506,8 +506,8 @@ module Rswag
 
             it "warns the user to upgrade" do
               expect(request[:headers]).to eq("HTTP_AUTHORIZATION" => "Basic foobar")
-              expect(Rswag::Specs.deprecator).to have_received(:warn)
-                .with("Rswag::Specs: WARNING: securityDefinitions is replaced in OpenAPI3! Rename to components/securitySchemes (in swagger_helper.rb)")
+              expect(RSpec::Swag.deprecator).to have_received(:warn)
+                .with("RSpec::Swag: WARNING: securityDefinitions is replaced in OpenAPI3! Rename to components/securitySchemes (in swagger_helper.rb)")
               expect(openapi_spec[:components]).to have_key(:securitySchemes)
             end
           end
@@ -625,7 +625,7 @@ module Rswag
           context "openapi 3.0.1 upgrade notice" do
             let(:openapi_spec) { { openapi: "3.0.1" } }
             before do
-              allow(Rswag::Specs.deprecator).to receive(:warn)
+              allow(RSpec::Swag.deprecator).to receive(:warn)
               openapi_spec[:parameters] = { q1: { name: "q1", in: :query, type: :string } }
               metadata[:operation][:parameters] = [{ "$ref" => "#/parameters/q1" }]
               allow(example).to receive(:q1).and_return("foo")
@@ -633,10 +633,10 @@ module Rswag
 
             it "warns the user to upgrade" do
               expect(request[:path]).to eq("/blogs?q1=foo")
-              expect(Rswag::Specs.deprecator).to have_received(:warn)
-                .with("Rswag::Specs: WARNING: #/parameters/ refs are replaced in OpenAPI3! Rename to #/components/parameters/")
-              expect(Rswag::Specs.deprecator).to have_received(:warn)
-                .with("Rswag::Specs: WARNING: parameters is replaced in OpenAPI3! Rename to components/parameters (in swagger_helper.rb)")
+              expect(RSpec::Swag.deprecator).to have_received(:warn)
+                .with("RSpec::Swag: WARNING: #/parameters/ refs are replaced in OpenAPI3! Rename to #/components/parameters/")
+              expect(RSpec::Swag.deprecator).to have_received(:warn)
+                .with("RSpec::Swag: WARNING: parameters is replaced in OpenAPI3! Rename to components/parameters (in swagger_helper.rb)")
             end
           end
         end
@@ -674,13 +674,13 @@ module Rswag
             let(:openapi_spec) { {:openapi => "3.0", :basePath => "/blogs" } }
 
             before do
-              allow(Rswag::Specs.deprecator).to receive(:warn)
+              allow(RSpec::Swag.deprecator).to receive(:warn)
             end
 
             it "generates the path" do
               expect(request[:headers]).to eq({})
-              expect(Rswag::Specs.deprecator).to have_received(:warn)
-                .with("Rswag::Specs: WARNING: basePath is replaced in OpenAPI3! Update your swagger_helper.rb")
+              expect(RSpec::Swag.deprecator).to have_received(:warn)
+                .with("RSpec::Swag: WARNING: basePath is replaced in OpenAPI3! Update your swagger_helper.rb")
             end
           end
         end

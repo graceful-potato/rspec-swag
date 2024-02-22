@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require "rswag/specs/example_group_helpers"
+require "rspec/swag/example_group_helpers"
 
-module Rswag
-  module Specs
+module RSpec
+  module Swag
     RSpec.describe ExampleGroupHelpers do
       subject { double("example_group") }
 
@@ -253,14 +253,14 @@ module Rswag
 
         it "executes a specification" do
           expected_spec_description = "returns a 200 response"
-          expect(subject).to receive(:it).with(expected_spec_description, rswag: true)
+          expect(subject).to receive(:it).with(expected_spec_description, swagger: true)
           subject.run_test!
         end
 
         context "when options[:description] is passed" do
           it "executes a specification described with passed description" do
             expected_spec_description = "returns a 200 response - with a custom description"
-            expect(subject).to receive(:it).with(expected_spec_description, rswag: true)
+            expect(subject).to receive(:it).with(expected_spec_description, swagger: true)
             subject.run_test!(expected_spec_description)
           end
         end

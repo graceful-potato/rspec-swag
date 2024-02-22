@@ -42,7 +42,7 @@ module RSpec
           is_nullable = nullable_attribute.nil? ? false : nullable_attribute
           is_required = required_attribute.nil? ? true : required_attribute
 
-          if headers.exclude?(name.to_s) && is_required
+          if !headers.include?(name.to_s) && is_required
             raise UnexpectedResponse, "Expected response header #{name} to be present"
           end
 
