@@ -11,5 +11,9 @@ gem "sinatra"
 gem "sqlite3"
 
 group :development, :test do
+  gem "database_cleaner-sequel"
   gem "debug"
+  gem "rack-test"
+  gem "rspec"
+  gem "rspec-swag"
 end
