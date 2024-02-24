@@ -10,6 +10,7 @@ AllCops:
     - "lib/tasks/**/*"
     - "spec/**/*"
     - "lib/rspec/swag/templates/**/*"
+    - "examples/**/spec/**/*"
 
 Metrics/LineLength:
   Max: 120
