@@ -14,8 +14,8 @@ module RSpec
       c.add_setting :swagger_dry_run
       c.add_setting :openapi_format, default: :json
       c.add_setting :openapi_strict_schema_validation
-      c.extend ExampleGroupHelpers, type: :request
-      c.include ExampleHelpers, type: :request
+      c.extend ExampleGroupHelpers
+      c.include ExampleHelpers
     end
 
     def self.config

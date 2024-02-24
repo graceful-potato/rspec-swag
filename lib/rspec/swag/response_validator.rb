@@ -27,7 +27,7 @@ module RSpec
         return unless response.status.to_s != expected
 
         raise UnexpectedResponse,
-              "Expected response code '#{response.code}' to match '#{expected}'\n" \
+              "Expected response code '#{response.status}' to match '#{expected}'\n" \
               "Response body: #{response.body}"
       end
 
