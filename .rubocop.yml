@@ -11,6 +11,7 @@ AllCops:
     - "spec/**/*"
     - "lib/rspec/swag/templates/**/*"
     - "examples/**/spec/**/*"
+    - "examples/hanami_2.1/Guardfile"
 
 Metrics/LineLength:
   Max: 120
