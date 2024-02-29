@@ -39,3 +39,9 @@ Metrics/CyclomaticComplexity:
 
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented_relative_to_receiver
+  
+Style/ClassAndModuleChildren:
+  EnforcedStyle: nested
+  Enabled: true
+  Exclude: 
+    - examples/hanami_2.1/**/*
