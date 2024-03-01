@@ -8,6 +8,6 @@ RSpec.shared_context "Rack::Test" do
 end
 
 RSpec.configure do |config|
-  config.include Rack::Test::Methods
-  config.include_context "Rack::Test"
+  config.include Rack::Test::Methods, type: :request
+  config.include_context "Rack::Test", type: :request
 end

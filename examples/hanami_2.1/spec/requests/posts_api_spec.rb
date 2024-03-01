@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 require "swagger_helper"
-require "debug"
 
-RSpec.describe "Posts API" do
+RSpec.describe "Posts API", type: :request do
   let(:repo) { app.slices[:api]["repositories.posts"] }
 
   path "/api/v1/posts" do
