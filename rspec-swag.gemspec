@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
     "homepage_uri"    => "https://github.com/graceful-potato/rspec-swag",
   }
   s.summary     = "An OpenAPI-based (formerly called Swagger) DSL for rspec & accompanying rake task for generating OpenAPI specification files"
-  s.description = "Simplify API integration testing with a succinct rspec DSL and generate OpenAPI specification files directly from your rspec tests. More about the OpenAPI initiative here: http://spec.openapis.org/"
+  s.description = "Fork of rswag-specs. Compatible with any rack framework like Sinatra, Padrino, Hanami, Roda, etc. Simplify API integration testing with a succinct rspec DSL and generate OpenAPI specification files directly from your rspec tests. More about the OpenAPI initiative here: http://spec.openapis.org/"
   s.license     = "MIT"
 
   s.files = Dir["lib/**/*"] + ["MIT-LICENSE", "Rakefile", ".rubocop_rspec_alias_config.yml"]
