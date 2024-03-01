@@ -7,7 +7,7 @@ RSpec.configure do |config|
   # Specify a root folder where Swagger JSON files are generated
   # NOTE: If you're using the rswag-api to serve API descriptions, you'll need
   # to ensure that it's configured to serve Swagger from the same folder
-  config.openapi_root = File.expand_path("../public/api/", File.dirname(__FILE__))
+  config.openapi_root = File.expand_path("../public/assets/api/", File.dirname(__FILE__))
 
   # Define one or more Swagger documents and provide global metadata for each one
   # When you run the 'rspec:swaggerize' rake task, the complete Swagger will

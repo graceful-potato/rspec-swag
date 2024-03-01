@@ -3,6 +3,7 @@
 module Blog
   class Routes < Hanami::Routes
     # Add your routes here. See https://guides.hanamirb.org/routing/overview/ for details.
+    root to: "swagger_ui.index"
 
     slice :api, at: "/api" do
       scope "v1" do
