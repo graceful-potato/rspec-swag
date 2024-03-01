@@ -1,6 +1,7 @@
 require "database_cleaner-sequel"
 
 Hanami.app.prepare(:persistence)
+DatabaseCleaner.allow_remote_database_url = true
 DatabaseCleaner[:sequel, db: Hanami.app["persistence.db"]]
 
 RSpec.configure do |config|

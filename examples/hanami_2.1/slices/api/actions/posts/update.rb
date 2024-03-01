@@ -16,9 +16,9 @@ module API::Actions::Posts
     end
 
     def handle(request, response)
+      halt 422, { error: request.params.errors }.to_json unless request.params.valid?
       post = repo.find(request.params[:id])
       halt 404, { error: "Not found" }.to_json unless post
-      halt 422, { error: request.params.errors }.to_json unless request.params.valid?
       halt 422, { error: "Title or body should be in request." }.to_json if request.params[:post].empty?
 
       post = repo.update(post.id, request.params[:post])

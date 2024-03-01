@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rom/sql/rake_task"
+require "rspec/swag/rake_task"
 
 task :environment do
   require_relative "config/app"

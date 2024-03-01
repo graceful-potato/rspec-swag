@@ -25,6 +25,7 @@ end
 group :development, :test do
   gem "debug"
   gem "dotenv"
+  gem "rspec-swag"
 end
 
 group :cli, :development do
