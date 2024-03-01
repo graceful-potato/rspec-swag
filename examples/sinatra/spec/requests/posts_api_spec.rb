@@ -2,7 +2,7 @@
 
 require "swagger_helper"
 
-describe "Posts API" do
+RSpec.describe "Posts API" do
   path "/posts" do
     get "Retrieves all posts" do
       tags "Posts"
