@@ -5,6 +5,8 @@ rspec-swag
 
 OpenApi 3.0 and Swagger 2.0 compatible!
 
+This is a fork of the [rswag-specs](https://github.com/rswag/rswag/tree/master/rswag-specs) gem. The original **rswag-specs** gem is designed specifically for Rails applications, but this fork can be utilized with any Ruby rack-compatible framework. Essentially, it uses `rack-test` instead of `ActionDispatch::IntegrationTest`.
+
 rspec-swag extends rspec "request specs" with a Swagger-based DSL for describing and testing API operations. You describe your API operations with a succinct, intuitive syntax, and it automatically runs the tests. Once you have green tests, run a rake task to auto-generate corresponding Swagger files. This gem makes it seamless to go from integration specs, which you're probably doing in some form already, to documentation for your API consumers.
 
 And that's not all ...
@@ -15,7 +17,6 @@ Once you have an API that can describe itself in Swagger, you've opened the trea
 **Table of Contents**
 
 - [rspec-swag](#rspec-swag)
-  - [What is it?](#what-is-it)
   - [Compatibility](#compatibility)
   - [Getting Started](#getting-started)
   - [The rspec DSL](#the-rspec-dsl)
@@ -42,34 +43,15 @@ Once you have an API that can describe itself in Swagger, you've opened the trea
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## What is it? ##
-This is a fork of the [rswag-specs](https://github.com/rswag/rswag/tree/master/rswag-specs) gem. The original **rswag-specs** gem is designed specifically for Rails applications, but this fork can be utilized with any Ruby rack-compatible framework. Essentially, it uses `rack-test` instead of `ActionDispatch::IntegrationTest`.
-
 ## Compatibility ##
- - any rack compatible web framework (__Sinatra__, __Padrino__, __Hanami__, __Roda__, etc.)
- - rspec > 3.0
- - rack-test
+
+- any rack compatible web framework (**Sinatra**, **Padrino**, **Hanami**, **Roda**, etc.)
+- rspec > 3.0
+- rack-test
 
 ## Getting Started ##
 
-1. Add these lines to your applications _Gemfile_:
-
-    ```ruby
-    group :development, :test do
-      gem "rspec-swag"
-      gem "rack-test"
-    end
-    ```
-
-2. Add this line to your applications _Rakefile_:
-
-    ```ruby
-    require "rspec/swag/rake_task"
-    ```
-
-    If you don't have one, then just create it.
-
-3. Make sure that _rspec_ gem installed and initialized. If not add this to your applications _Gemfile_:
+1. Make sure that the _rspec_ gem is installed and initialized. If not add this to your applications _Gemfile_:
 
     ```ruby
     group :development, :test do
@@ -78,21 +60,29 @@ This is a fork of the [rswag-specs](https://github.com/rswag/rswag/tree/master/r
     end
     ```
 
-    Run `bundle install` and then `rspec --init`
-
-4. Run bundle install in application folder:
+    Run
 
     ```sh
     bundle install
     ```
 
-5. Run the install generator
+    and then
 
     ```sh
-    rake rspec:swag:install
+    rspec --init
     ```
 
-6. In your `spec/spec_helper.rb`
+2. Make sure that the _rack-test_ gem is installed and configured correctly. Some frameworks, such as Hanami, come with it out of the box. If not add _rack-test_ to your applications _Gemfile_:
+
+    ```ruby
+    group :development, :test do
+      # ...
+      gem "rack-test"
+    end
+    ```
+
+    After that you need to include `Rack::Test::Methods` and define `app` method in your _spec/spec_helper.rb_ file. Modify it this way:
+
     ```ruby
     require "rack/test"
     # ...
@@ -126,14 +116,40 @@ This is a fork of the [rswag-specs](https://github.com/rswag/rswag/tree/master/r
     end
     ```
 
-7. Create an integration spec to describe and test your API.
+3. Add _rspec-swag_ gem to your applications _Gemfile_:
+
+    ```ruby
+    group :development, :test do
+      # ...
+      gem "rspec-swag"
+    end
+    ```
+
+4. Add this line to your applications _Rakefile_. If you don't have one, then just create it:
+
+    ```ruby
+    require "rspec/swag/rake_task"
+    ```
+
+5. Run bundle install in application folder:
+
+    ```sh
+    bundle install
+    ```
+
+6. Run the install generator:
+
+    ```sh
+    rake rspec:swag:install
+    ```
+
+7. Create an integration spec to describe and test your API:
 
     ```ruby
     # spec/requests/blogs_spec.rb
     require "swagger_helper"
 
-    describe "Blogs API" do
-
+    RSpec.describe "Blogs API", type: :request do
       path "/blogs" do
 
         post "Creates a blog" do
